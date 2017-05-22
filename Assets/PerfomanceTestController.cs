@@ -45,8 +45,8 @@ public class PerfomanceTestController : MonoBehaviour {
 
 		foreach (GameObject testUnit in _testUnits) {
 			Vector3 randomPosToTween = new Vector3 (Random.Range(minX, maxX), Random.Range(minY, maxY), 0f);
-//			LEANTweenMove (testUnit, randomPosToTween);
-//			ITweenMove (testUnit, randomPosToTween);
+            LEANTweenMove(testUnit, randomPosToTween);
+            //ITweenMove (testUnit, randomPosToTween);
 //			DOTWeenMove (testUnit, randomPosToTween);
 		}
 

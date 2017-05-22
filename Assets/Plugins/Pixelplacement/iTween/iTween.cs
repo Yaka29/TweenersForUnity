@@ -7344,7 +7344,7 @@ public class iTween : MonoBehaviour{
 	}
 
 	private float easeOutBack(float start, float end, float value){
-		float s = 1.70158f;
+        float s = 4f;// 1.70158f;
 		end -= start;
 		value = (value) - 1;
 		return end * ((value) * value * ((s + 1) * value + s) + 1) + start;
