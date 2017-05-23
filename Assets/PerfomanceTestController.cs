@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using UnityEngine.UI;
 
 public class PerfomanceTestController : MonoBehaviour {
 
@@ -15,7 +16,7 @@ public class PerfomanceTestController : MonoBehaviour {
 	private List<GameObject> _testUnits;
 
 	void Start () {
-		DOTween.Init(true, false);
+		DOTween.Init(false, false);
 		DOTween.defaultEaseType = DOTWEEN_EASE_TYPE;
 		LeanTween.init (_unitsNumber);
 		GenerateUnits ();
@@ -45,9 +46,14 @@ public class PerfomanceTestController : MonoBehaviour {
 
 		foreach (GameObject testUnit in _testUnits) {
 			Vector3 randomPosToTween = new Vector3 (Random.Range(minX, maxX), Random.Range(minY, maxY), 0f);
-            LEANTweenMove(testUnit, randomPosToTween);
-            //ITweenMove (testUnit, randomPosToTween);
-//			DOTWeenMove (testUnit, randomPosToTween);
+			//LEANTweenMove(testUnit, randomPosToTween);
+			//ITweenMove(testUnit, randomPosToTween);
+			//DOTWeenMove(testUnit, randomPosToTween);
+
+			testUnit.transform.position = randomPosToTween;
+			//LeanTweenFade(testUnit);
+			ITweenFade(testUnit);
+			//DOTweenFade(testUnit);
 		}
 
 		DebugTimePeriod (startTime, "Start all tweens time");
@@ -79,6 +85,49 @@ public class PerfomanceTestController : MonoBehaviour {
 		LeanTween.move (target, toPos, animationTime)
 			.setEase (LEAN_TWEEN_EASE_TYPE)
 			.setLoopType (LeanTweenType.clamp);
+	}
+
+	private void LeanTweenFade(GameObject target) {
+		float animationTime = Random.Range(BASE_ANIMATION_DURATION_MIN, BASE_ANIMATION_DURATION_MAX);
+		LeanTween.alpha(target.GetComponent<RectTransform>(), 0f, animationTime)
+			.setEase(LEAN_TWEEN_EASE_TYPE)
+			.setLoopType(LeanTweenType.clamp);
+	}
+
+	private void ITweenFade(GameObject target) {
+		float animationTime = Random.Range(BASE_ANIMATION_DURATION_MIN, BASE_ANIMATION_DURATION_MAX);
+		const iTween.EaseType ITWEEN_ALPHA_EASE_TYPE = iTween.EaseType.easeInOutBack;
+		Hashtable imageFadeParams = iTween.Hash(
+			"from", target.transform.GetComponent<Image>().color.a,
+			"to", 0f,
+			"time", animationTime,
+			"easetype", ITWEEN_ALPHA_EASE_TYPE,
+			"looptype", iTween.LoopType.loop,
+			"onupdate", (System.Action<object>)(newValue => {
+				Color newColor = target.GetComponent<Image>().color;
+				newColor.a = (float)newValue;
+				target.GetComponent<Image>().color = newColor;
+				Color newTextColor = target.transform.Find("Text").transform.GetComponent<Text>().color;
+				newTextColor.a = (float)newValue;
+				target.transform.Find("Text").transform.GetComponent<Text>().color = newTextColor;
+			}
+		));
+
+		iTween.ValueTo(target, imageFadeParams);
+	}
+
+	private void DOTweenFade(GameObject target) {
+		float animationTime = Random.Range(BASE_ANIMATION_DURATION_MIN, BASE_ANIMATION_DURATION_MAX);
+		DOTween.ToAlpha(() => target.GetComponent<Image>().color,
+			x => target.GetComponent<Image>().color = x,
+			0f,
+			animationTime)
+			.SetLoops(-1);
+		DOTween.ToAlpha(() => target.transform.Find("Text").transform.GetComponent<Text>().color,
+			x => target.transform.Find("Text").transform.GetComponent<Text>().color = x,
+			0f,
+			animationTime)
+			.SetLoops(-1);
 	}
 
 	private void DebugTimePeriod(float startTime, string timePeriodName) {

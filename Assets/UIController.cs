@@ -185,8 +185,8 @@ public class UIController : MonoBehaviour {
 		float animationTime = immediately ? 0f : BASE_ANIMATION_DURATION;
 
 		//LEANTWEEN
-//		LeanTween.alpha (_popupFader.GetComponent<RectTransform> (), 0.5f, animationTime)
-//			.setEase (LEAN_TWEEN_EASE_TYPE);
+		//LeanTween.alpha(_popupFader.GetComponent<RectTransform>(), 0.5f, animationTime)
+		//	.setEase(LEAN_TWEEN_EASE_TYPE);
 
 		//DOTWEEN
 		DOTween.ToAlpha (() => _popupFader.GetComponent<Image> ().color,
